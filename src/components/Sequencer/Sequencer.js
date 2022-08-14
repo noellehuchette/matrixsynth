@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Square from './Square';
-import { start, Transport, Loop, Synth } from 'tone';
+import { start, Transport, Loop, Synth, Time } from 'tone';
 import { step, initialize, stop } from '../../store/sequencer';
 import './sequencer.css';
 
@@ -57,7 +57,7 @@ class Sequencer extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            tempo: 120,
+            tempo: 130,
             synths: [],
             iniTone: false,
             playing: false,
@@ -68,35 +68,47 @@ class Sequencer extends Component {
         this.toggleSquare = this.toggleSquare.bind(this);
         this.toggleTransport = this.toggleTransport.bind(this);
         this.clearPattern = this.clearPattern.bind(this);
-        this.newLoop = this.newLoop.bind(this);
     }
-    
-    componentDidMount() {
-        this.props.initialize(0);        
 
+    componentDidMount() {
+        this.props.initialize(0);
+        const synths = buildSynths();
+        Transport.bpm.value = this.state.tempo;
+        this.setState({ synths });
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        if (this.state.playing && (this.props.sequencer !== prevProps.sequencer || !prevState.playing)) {
+            const { synths, pattern } = this.state;
+            const step = this.props.sequencer;
+            synths.forEach((synth, note) => {
+                if(pattern[note][step]) {
+                    synth.triggerAttackRelease(notes[note], '8n', Transport.immediate());
+                }
+            });
+        }
     }
 
     init() {
-        const {step} = this.props;
+        const { step } = this.props;
         start();
+        Transport.stop();
+        this.props.stop();
         const iniTone = true;
         Transport.loop = true;
-        let sequencer = 0;
-        Transport.setLoopPoints(0, '4m');        
+        Transport.setLoopPoints(0, '4m');
         let beat = new Loop((time) => {
             step();
         }, '4n').start(0);
-        const synths = buildSynths();
-        this.setState({ iniTone, synths });        
-
+        this.setState({ iniTone });
     }
 
     toggleTransport() {
         if (this.state.playing) {
             Transport.stop();
-            this.props.stop();
             let playing = false;
             this.setState({ playing });
+            this.props.stop();
         }
         else {
             Transport.start();
@@ -108,21 +120,12 @@ class Sequencer extends Component {
     toggleSquare(x, y) {
         let pattern = this.state.pattern;
         pattern[y][x] = +!pattern[y][x];
-        this.newLoop(pattern);
         this.setState({ pattern });
     }
 
     clearPattern() {
         let pattern = initPattern();
         this.setState({ pattern });
-    }
-
-    newLoop(pattern) {
-        let {step, sequencer} = this.props;
-        let loop = new Loop((time) => {
-
-        }, '4m').start(0);
-        this.setState({ loop });
     }
 
     render() {
