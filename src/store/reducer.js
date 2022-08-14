@@ -1,11 +1,6 @@
 import { combineReducers } from 'redux';
+import sequencer from './sequencer'
 
-export const cReducer = combineReducers({
-    
+export default combineReducers({
+    sequencer,
 });
-
-const bReducer = function (state = {}, action) {
-    return state;
-};
-
-export default bReducer;
