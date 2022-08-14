@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Square from './Square';
-import { init, toggleSquare, clearPattern } from '../../store/sequencer';
+import { start, Transport, Sequence, Synth } from 'tone';
 import './sequencer.css';
 
 const notes = [
@@ -23,77 +23,123 @@ const notes = [
     'D2',
 ];
 
-const initPattern = [
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-];
+const initPattern = () => {
+    return [
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    ];
+};
 
 class Sequencer extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            init: false,
+            tempo: 120,
+            synth: new Synth().toDestination(),
+            iniTone: false,
             playing: false,
-            pattern: initPattern,
-            synths: [],
-            liveStep: 0,
+            pattern: initPattern(),
+            step: 0,
+            loop: {},
         };
+        this.init = this.init.bind(this);
+        this.toggleSquare = this.toggleSquare.bind(this);
+        this.toggleTransport = this.toggleTransport.bind(this);
+        this.clearPattern = this.clearPattern.bind(this);
     }
 
-    componentDidMount() {
-
+    componentDidUpdate(prevProps, prevState) {
+        let { pattern, synth } = this.state;
+        if (JSON.stringify(pattern) !== JSON.stringify(prevState.pattern)) {
+            const loop = new Sequence(
+                (time, step) => {
+                    this.setState({step});
+                    pattern.map((row, nidx) => {
+                        if (row[step]) {
+                            synth.triggerAttackRelease(notes[nidx], '8n', time);
+                        }
+                    });
+                }
+            ).start(0);
+            this.setState({ loop, pattern });
+        }
     }
 
     init() {
-        this.setState({ init: true });
+        start();
+        const iniTone = true;
+        this.setState({ iniTone });
+    }
+
+    toggleTransport() {
+        Transport.toggle();
+        let playing = !this.state.playing;
+        this.setState({ playing });
+    }
+
+    toggleSquare(x, y) {
+        let pattern = this.state.pattern;
+        pattern[y][x] = +!pattern[y][x];
+        this.setState({ pattern });
+    }
+
+    clearPattern() {
+        let pattern = initPattern();
+        this.setState({ pattern });
     }
 
     render() {
-        const { init, playing, pattern, synths, liveStep } = this.state;
+        const { step, pattern, iniTone, playing } = this.state;
         return (
             <div>
-                {pattern.map((row,y) => (
-                        <div className='tonerow' key={`yy${y}`}>
-                            {row.map((val, x) => (
-                                <Square
-                                  key={`xx${x}`}
-                                  active={liveStep === x}
-                                  value={val}
-                                  onClick={() => pattern[y][x] = !pattern[y][x]}
-                                />
-                            ))
-                            }
-                        </div>
-                    ))}
+                <div>
+                    {pattern.map((row,y) => (
+                            <div className='tonerow' key={`yy${y}`}>
+                                {row.map((val, x) => (
+                                    <Square
+                                      key={`xx${x}`}
+                                      active={step === x}
+                                      value={val}
+                                      onClick={() => this.toggleSquare(x,y)}
+                                    />
+                                ))
+                                }
+                            </div>
+                        ))}
+                </div>
+                <div>
+                    {iniTone ?
+                        <button onClick={this.toggleTransport}>{playing ? 'STOP' : 'PLAY'}</button>
+                            :
+                        <button onClick={this.init}>INIT</button>
+                    }
+                    <button onClick={this.clearPattern}>CLEAR PATTERN</button>
+                </div>
             </div>
         );
     }
 }
 
 const mapState = (state) => {
-    return {
-
-    };
+    return {};
 };
 
 const mapDispatch = (dispatch) => {
-    return {
-
-    };
+    return {};
 };
 
 export default connect(mapState, mapDispatch)(Sequencer);
