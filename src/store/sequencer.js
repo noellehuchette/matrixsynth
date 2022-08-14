@@ -1,6 +1,9 @@
+import {Transport} from 'tone';
+
 const STEP = 'STEP';
 const INITIALIZE = 'INITIALIZE';
 const STOP = 'STOP';
+
 
 export const step = () => ({
     type: STEP,
@@ -23,7 +26,8 @@ export default function(state = 0, action) {
             if (++updState >= 16) updState = 0;
             return updState;
         case STOP:
-            return state = 0;
+            Transport.stop();
+            return updState = 0;
         default:
             return state;
     }
