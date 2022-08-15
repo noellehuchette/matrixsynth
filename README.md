@@ -9,3 +9,4 @@ Based on an old flash app that made the rounds a while back
 - voice control
 - additional modules
 - effects & modulation
+- improved styling and performance
