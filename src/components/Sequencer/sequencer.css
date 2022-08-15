@@ -1,4 +1,14 @@
+.sequencer-block {
+    margin: 2rem;
+    align-self: center;
+}
+
 .tonerow {
     display: flex;
     justify-content: center;
+}
+
+button {
+    margin: 1rem;
+    font-size: 1.8rem;
 }

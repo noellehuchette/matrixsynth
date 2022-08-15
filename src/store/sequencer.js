@@ -3,6 +3,7 @@ import {Transport} from 'tone';
 const STEP = 'STEP';
 const INITIALIZE = 'INITIALIZE';
 const STOP = 'STOP';
+const PLAY = 'PLAY';
 
 
 export const step = () => ({
@@ -17,6 +18,11 @@ export const stop = () => ({
     type: STOP,
 });
 
+export const play = () => ({
+    type: PLAY,
+});
+
+
 export default function(state = 0, action) {
     let updState = +state;
     switch (action.type) {
@@ -28,6 +34,8 @@ export default function(state = 0, action) {
         case STOP:
             Transport.stop();
             return updState = 0;
+        case PLAY:
+            Transport.start();
         default:
             return state;
     }

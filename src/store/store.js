@@ -7,7 +7,6 @@ const store = createStore(
   reducer,
   applyMiddleware(
     thunkMiddleware,
-    createLogger()
   )
 );
 

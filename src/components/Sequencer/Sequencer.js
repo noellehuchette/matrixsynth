@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Square from './Square';
 import { start, Transport, Loop, Synth, Time } from 'tone';
-import { step, initialize, stop } from '../../store/sequencer';
+import { step, initialize, stop, play } from '../../store/sequencer';
 import './sequencer.css';
 
 const notes = [
@@ -146,8 +146,8 @@ class Sequencer extends Component {
         const step = this.props.sequencer || 0;
         const { pattern, iniTone, playing } = this.state;
         return (
-            <div>
-                <div>
+            <div className='sequencer-block'>
+                <div className='matrix'>
                     {pattern.map((row,y) => (
                             <div className='tonerow' key={`yy${y}`}>
                                 {row.map((val, x) => (
@@ -162,7 +162,7 @@ class Sequencer extends Component {
                             </div>
                         ))}
                 </div>
-                <div>
+                <div className='transport'>
                     {iniTone ?
                         <button onClick={this.toggleTransport}>{playing ? 'STOP' : 'PLAY'}</button>
                             :
@@ -186,6 +186,7 @@ const mapDispatch = (dispatch) => {
         initialize: () => dispatch(initialize()),
         step: (synths) => dispatch(step(synths)),
         stop: () => dispatch(stop()),
+        play: () => dispatch(play()),
     };
 };
 
