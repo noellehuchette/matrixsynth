@@ -8,7 +8,7 @@ Made over a weekend during bootcamp
 
 ### Program wishlist
 - tempo control
-- voice control
-- additional modules
-- effects & modulation
-- improved styling and performance
+- voice control (oscillator selector, amp envelope, FM/AM options)
+- additional modules (filter & ADSR envelope)
+- effects & modulation (reverb, delay, distortion, LFO)
+- improved styling and performance 
