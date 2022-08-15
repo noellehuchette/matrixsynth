@@ -4,7 +4,7 @@
 
 Based on an flash app that made the rounds a while back.
 
-Made over a weekend during bootcamp
+Made over a weekend during bootcamp using create-react-app for boilerplate code.
 
 ### Program wishlist
 - tempo control
@@ -12,3 +12,4 @@ Made over a weekend during bootcamp
 - additional modules (filter & ADSR envelope)
 - effects & modulation (reverb, delay, distortion, LFO)
 - improved styling and performance 
+
