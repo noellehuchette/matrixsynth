@@ -184,7 +184,7 @@ const mapState = (state) => {
 const mapDispatch = (dispatch) => {
     return {
         initialize: () => dispatch(initialize()),
-        step: (synths) => dispatch(step(synths)),
+        step: () => dispatch(step()),
         stop: () => dispatch(stop()),
         play: () => dispatch(play()),
     };
