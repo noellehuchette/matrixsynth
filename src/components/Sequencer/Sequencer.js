@@ -47,10 +47,10 @@ const initPattern = () => {
 
 const buildSynths = () => {
     const synths = [];
-    const chorus = new Chorus({wet: 0.8}).toDestination();
+    const chorus = new Chorus({ wet: 0.8 }).toDestination();
     for (let syn = 0; syn < 16; syn++) {
         synths[syn] = new Synth().connect(chorus);
-        
+
     }
     return synths;
 };
@@ -149,6 +149,7 @@ class Sequencer extends Component {
         const { pattern, iniTone, playing } = this.state;
         return (
             <div className='sequencer-block'>
+                <h3>matrix sequencer</h3>
                 <div className='matrix'>
                     {pattern.map((row,y) => (
                             <div className='tonerow' key={`yy${y}`}>
@@ -172,6 +173,7 @@ class Sequencer extends Component {
                     }
                     <button onClick={this.clearPattern}>CLEAR PATTERN</button>
                 </div>
+                
             </div>
         );
     }

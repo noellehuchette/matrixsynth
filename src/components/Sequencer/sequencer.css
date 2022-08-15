@@ -1,6 +1,13 @@
 .sequencer-block {
+    display: flex;
+    flex-direction: column;
     margin: 2rem;
     align-self: center;
+}
+
+.transport {
+    display: flex;
+    justify-content: space-around;
 }
 
 .tonerow {
@@ -26,4 +33,11 @@ button:active {
     background: #D3D4D9;
     color: #252627;
     border: 4px double #252627;
+}
+
+h3 {
+    font-family: monospace;
+    text-transform: uppercase;
+    color: #D3D4D9;
+    font-size: 2rem;
 }
