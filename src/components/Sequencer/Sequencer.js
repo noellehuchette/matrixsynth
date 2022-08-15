@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Square from './Square';
-import { start, Transport, Loop, Synth, Time, Chorus } from 'tone';
+import { start, Transport, Loop, Synth, Time, Chorus, Master } from 'tone';
 import { step, initialize, stop, play } from '../../store/sequencer';
 import './sequencer.css';
 
@@ -47,9 +47,9 @@ const initPattern = () => {
 
 const buildSynths = () => {
     const synths = [];
-    const chorus = new Chorus({ wet: 0.8 }).toDestination();
+    const chorus = new Chorus({ freq: 5, delayTime: 6, depth: 5, spread: 180, wet: 1 }).toDestination();
     for (let syn = 0; syn < 16; syn++) {
-        synths[syn] = new Synth().connect(chorus);
+        synths[syn] = new Synth().connect(chorus).connect(Master);
 
     }
     return synths;
