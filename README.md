@@ -2,7 +2,9 @@
 
 ## A simple synthesizer/sequencer app using Tone.js and React
 
-Based on an old flash app that made the rounds a while back
+Based on an old flash app that made the rounds a while back.
+
+Made over a weekend during bootcamp
 
 ### Program wishlist
 - tempo control
