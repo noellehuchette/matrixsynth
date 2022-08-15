@@ -47,9 +47,9 @@ const initPattern = () => {
 
 const buildSynths = () => {
     const synths = [];
-    const chorus = new Chorus({ freq: 5, delayTime: 6, depth: 5, spread: 180, wet: 1 }).toDestination();
+    const chorus = new Chorus(6, 5, 5).toDestination();
     for (let syn = 0; syn < 16; syn++) {
-        synths[syn] = new Synth().connect(chorus).connect(Master);
+        synths[syn] = new Synth().connect(chorus);
 
     }
     return synths;
