@@ -1,6 +1,6 @@
 # Matrix Synth
 
-## A simple synthesizer/sequencer app
+## A simple synthesizer/sequencer app using Tone.js and React
 
 ### Program wishlist
 - tempo control
