@@ -9,6 +9,21 @@
 }
 
 button {
+    font-family: monospace;
     margin: 1rem;
-    font-size: 1.8rem;
+    padding: 4px 12px;
+    font-size: 1.5rem;
+    color: #D3D4D9;
+    background: transparent;
+    border: 4px double #D3D4D9;
+}
+
+button:hover {
+    background: #252627;
+}
+
+button:active {
+    background: #D3D4D9;
+    color: #252627;
+    border: 4px double #252627;
 }

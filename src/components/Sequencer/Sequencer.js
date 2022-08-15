@@ -95,7 +95,7 @@ class Sequencer extends Component {
         start();
         const iniTone = true;
         Transport.loop = true;
-        Transport.setLoopPoints(0, '4m');
+        Transport.setLoopPoints(0, '1m');
         let beat = new Loop((time) => {
             step();
         }, '16n').start(0);
