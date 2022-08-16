@@ -23,7 +23,7 @@ export const play = () => ({
 });
 
 
-export default function(state = 0, action) {
+export default function(state = -1, action) {
     let updState = +state;
     switch (action.type) {
         case INITIALIZE:
@@ -33,7 +33,7 @@ export default function(state = 0, action) {
             return updState;
         case STOP:
             Transport.stop();
-            return updState = 0;
+            return updState = -1;
         case PLAY:
             Transport.start();
         default:
