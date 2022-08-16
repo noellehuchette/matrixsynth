@@ -86,9 +86,6 @@ class Sequencer extends Component {
         if (!this.state.playing && this.props.sequencer) {
             this.props.stop();
         }
-        if (JSON.stringify(this.state.pattern) !== JSON.stringify(prevState.pattern)) {
-            this.setPart(this.state.pattern);
-        }
         if (this.state.tempo !== prevState.tempo) {
             Transport.bpm.value = this.state.tempo;
         }
@@ -127,11 +124,13 @@ class Sequencer extends Component {
         let pattern = this.state.pattern;
         pattern[y][x] = +!pattern[y][x];
         this.setState({ pattern });
+        this.setPart(pattern);
     }
 
     clearPattern() {
         let pattern = initPattern();
         this.setState({ pattern });
+        this.setPart(pattern);
     }
 
     setPart(pattern) {
