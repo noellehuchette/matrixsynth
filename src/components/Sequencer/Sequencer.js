@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Square from './Square';
-import { start, Transport, Loop, Synth, Time, Chorus, Draw } from 'tone';
+import { start, Transport, Loop, Synth, Time, Chorus, Draw, Part } from 'tone';
 import { step, initialize, stop, play } from '../../store/sequencer';
 import './sequencer.css';
 
@@ -65,13 +65,15 @@ class Sequencer extends Component {
             iniTone: false,
             playing: false,
             pattern: pattern ? JSON.parse(pattern) : initPattern(),
-            loop: {},
+            // loop: {},
+            parts: [],
         };
         this.init = this.init.bind(this);
         this.toggleSquare = this.toggleSquare.bind(this);
         this.toggleTransport = this.toggleTransport.bind(this);
         this.clearPattern = this.clearPattern.bind(this);
-        this.setLoop = this.setLoop.bind(this);
+        // this.setLoop = this.setLoop.bind(this);
+        this.setPart = this.setPart.bind(this);
         this.tempoAdjust = this.tempoAdjust.bind(this);
     }
 
@@ -87,7 +89,8 @@ class Sequencer extends Component {
             this.props.stop();
         }
         if (JSON.stringify(this.state.pattern) !== JSON.stringify(prevState.pattern)) {
-            this.setLoop(this.state.pattern);
+            // this.setLoop(this.state.pattern);
+            this.setPart(this.state.pattern);
         }
         if (this.state.tempo !== prevState.tempo) {
             Transport.bpm.value = this.state.tempo;
@@ -103,10 +106,11 @@ class Sequencer extends Component {
         let beat = new Loop((time) => {
             Draw.schedule(() => {
                 step();
-            }, time)
+            }, time);
         }, '16n').start(0);
         this.setState({ iniTone });
-        this.setLoop(this.state.pattern);
+        this.setPart(this.state.pattern);
+        // this.setLoop(this.state.pattern);
         this.props.stop();
     }
 
@@ -134,26 +138,44 @@ class Sequencer extends Component {
         this.setState({ pattern });
     }
 
-    setLoop(pattern) {
-        if (this.state.loop && this.state.loop.name) this.state.loop.dispose();
-        const interval = Time('16n').toSeconds();
-        const { synths } = this.state;
-        const loop = new Loop(time => {
-            pattern.forEach((row, note) => {
-                row.forEach((step, beat) => {
-                    if (step) {
-                        synths[note].triggerAttackRelease(notes[note], '16n', time + (beat * interval));
-                    }
-                });
-            });
-        }, '1m').start(0);
-        this.setState({ loop });
+    // setLoop(pattern) {
+    //     if (this.state.loop && this.state.loop.name) this.state.loop.dispose();
+    //     const interval = Time('16n').toSeconds();
+    //     const { synths } = this.state;
+    //     const loop = new Loop(time => {
+    //         pattern.forEach((row, note) => {
+    //             row.forEach((step, beat) => {
+    //                 if (step) {
+    //                     synths[note].triggerAttackRelease(notes[note], '16n', time + (beat * interval));
+    //                 }
+    //             });
+    //         });
+    //     }, '1m').start(0);
+    //     this.setState({ loop });
+    //     window.localStorage.setItem('matrixpattern', JSON.stringify(pattern));
+    // }
+
+    setPart(pattern) {
+        let { synths, parts } = this.state;
+        parts.forEach(part => part.dispose());
+        parts = [];
+        synths.forEach((synth, idx) => {
+            let arrangement = pattern[idx].map((step, beat) => {
+                if (step) return { time: { '16n': +beat }, note: notes[idx] };
+            }).filter(item => item);
+            parts.push(new Part(((time, value) => {
+                synth.triggerAttackRelease(value.note, '32n.', time);
+            }), arrangement).start(0));
+        });
+        this.setState({ parts });
         window.localStorage.setItem('matrixpattern', JSON.stringify(pattern));
     }
 
+
     tempoAdjust(e) {
         this.setState({ tempo: e.target.value });
-        this.setLoop(this.state.pattern);
+        this.setPart(this.state.pattern);
+        // this.setLoop(this.state.pattern);
     }
 
     render() {
@@ -178,8 +200,8 @@ class Sequencer extends Component {
                         ))}
                 </div>
                 <div className = 'controls'>
-                    {/*<label htmlFor='tempo-slider'>TEMPO: {`${tempo}`} BPM</label>
-                    <input type='range' name='tempo-slider' min='20' max='300' step='2' value={tempo} onChange={this.tempoAdjust}/>*/}
+                    <label htmlFor='tempo-slider'>TEMPO: {`${tempo}`} BPM</label>
+                    <input type='range' name='tempo-slider' min='20' max='300' step='2' value={tempo} onChange={this.tempoAdjust}/>
                 </div>
                 <div className='transport'>
                     {iniTone ?
