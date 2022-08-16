@@ -58,12 +58,13 @@ const buildSynths = () => {
 class Sequencer extends Component {
     constructor(props) {
         super(props);
+        let pattern = window.localStorage.getItem('matrixpattern');
         this.state = {
             tempo: 120,
             synths: [],
             iniTone: false,
             playing: false,
-            pattern: initPattern(),
+            pattern: pattern ? JSON.parse(pattern) : initPattern(),
             loop: {},
         };
         this.init = this.init.bind(this);
@@ -142,6 +143,7 @@ class Sequencer extends Component {
             });
         }, '1m').start(0);
         this.setState({ loop });
+        window.localStorage.setItem('matrixpattern', JSON.stringify(pattern));
     }
 
     render() {
