@@ -1,4 +1,4 @@
-import {Transport, Time} from 'tone';
+import {Transport} from 'tone';
 
 const STEP = 'STEP';
 const INITIALIZE = 'INITIALIZE';

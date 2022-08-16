@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Square from './Square';
-import { start, Transport, Loop, Synth, Time, Chorus} from 'tone';
+import { start, Transport, Loop, Synth, Time, Chorus, Draw } from 'tone';
 import { step, initialize, stop, play } from '../../store/sequencer';
 import './sequencer.css';
 
@@ -101,7 +101,9 @@ class Sequencer extends Component {
         Transport.loop = true;
         Transport.setLoopPoints(0, '1m');
         let beat = new Loop((time) => {
-            step();
+            Draw.schedule(() => {
+                step();
+            }, time)
         }, '16n').start(0);
         this.setState({ iniTone });
         this.setLoop(this.state.pattern);
