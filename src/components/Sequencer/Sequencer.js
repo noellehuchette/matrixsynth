@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Square from './Square';
-import { start, Transport, Loop, Synth, Time, Chorus, Master } from 'tone';
+import { start, Transport, Loop, Synth, Time, Chorus} from 'tone';
 import { step, initialize, stop, play } from '../../store/sequencer';
 import './sequencer.css';
 
@@ -175,7 +175,7 @@ class Sequencer extends Component {
                         ))}
                 </div>
                 <div className = 'controls'>
-                    <label htmlFor='tempo-slider'>Tempo: {`${tempo}`} bpm</label>
+                    <label htmlFor='tempo-slider'>TEMPO: {`${tempo}`} BPM</label>
                     <input type='range' name='tempo-slider' min='20' max='300' step='2' value={tempo} onChange={this.tempoAdjust}/>
                 </div>
                 <div className='transport'>
