@@ -72,6 +72,7 @@ class Sequencer extends Component {
         this.toggleTransport = this.toggleTransport.bind(this);
         this.clearPattern = this.clearPattern.bind(this);
         this.setLoop = this.setLoop.bind(this);
+        this.tempoAdjust = this.tempoAdjust.bind(this);
     }
 
     componentDidMount() {
@@ -88,7 +89,9 @@ class Sequencer extends Component {
         if (JSON.stringify(this.state.pattern) !== JSON.stringify(prevState.pattern)) {
             this.setLoop(this.state.pattern);
         }
-
+        if (this.state.tempo !== prevState.tempo) {
+            Transport.bpm.value = this.state.tempo;
+        }
     }
 
     init() {
@@ -146,9 +149,13 @@ class Sequencer extends Component {
         window.localStorage.setItem('matrixpattern', JSON.stringify(pattern));
     }
 
+    tempoAdjust(e) {
+        this.setState({ tempo: e.target.value });
+    }
+
     render() {
         const step = this.props.sequencer || 0;
-        const { pattern, iniTone, playing } = this.state;
+        const { pattern, iniTone, playing, tempo } = this.state;
         return (
             <div className='sequencer-block'>
                 <h3>matrix sequencer</h3>
@@ -167,6 +174,10 @@ class Sequencer extends Component {
                             </div>
                         ))}
                 </div>
+                <div className = 'controls'>
+                    <label htmlFor='tempo-slider'>Tempo: {`${tempo}`} bpm</label>
+                    <input type='range' name='tempo-slider' min='20' max='300' step='2' value={tempo} onChange={this.tempoAdjust}/>
+                </div>
                 <div className='transport'>
                     {iniTone ?
                         <button onClick={this.toggleTransport}>{playing ? 'STOP' : 'PLAY'}</button>
@@ -175,7 +186,6 @@ class Sequencer extends Component {
                     }
                     <button onClick={this.clearPattern}>CLEAR PATTERN</button>
                 </div>
-                
             </div>
         );
     }

@@ -1,4 +1,6 @@
 .sequencer-block {
+    font-family: monospace;
+    color: #D3D4D9;
     display: flex;
     flex-direction: column;
     margin: 2rem;
@@ -13,6 +15,16 @@
 .tonerow {
     display: flex;
     justify-content: center;
+}
+
+.controls {
+    font-size: 1.05rem;
+    align-self: center;
+    width: 300px;
+    margin: 5px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
 }
 
 button {
