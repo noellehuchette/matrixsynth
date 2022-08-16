@@ -83,7 +83,7 @@ class Sequencer extends Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        if (!this.state.playing && this.props.sequencer) {
+        if (!this.state.playing && this.props.sequencer != -1) {
             this.props.stop();
         }
         if (this.state.tempo !== prevState.tempo) {
