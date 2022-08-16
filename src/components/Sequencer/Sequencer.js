@@ -179,7 +179,7 @@ class Sequencer extends Component {
                 </div>
                 <div className = 'controls'>
                     <label htmlFor='tempo-slider'>TEMPO: {`${tempo}`} BPM</label>
-                    <input type='range' name='tempo-slider' min='20' max='300' step='2' value={tempo} onChange={this.tempoAdjust}/>
+                    <input type='range' name='tempo-slider' min='20' max='420' step='2' value={tempo} onChange={this.tempoAdjust}/>
                 </div>
                 <div className='transport'>
                     {iniTone ?
