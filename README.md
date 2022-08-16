@@ -7,7 +7,6 @@ Based on an flash app that made the rounds a while back.
 Made over a weekend during bootcamp using create-react-app for boilerplate code.
 
 ### Program wishlist
-- tempo control
 - voice control (oscillator selector, amp envelope, FM/AM options)
 - additional modules (filter & ADSR envelope)
 - effects & modulation (reverb, delay, distortion, LFO)
