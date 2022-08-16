@@ -151,6 +151,7 @@ class Sequencer extends Component {
 
     tempoAdjust(e) {
         this.setState({ tempo: e.target.value });
+        this.setLoop(this.state.pattern);
     }
 
     render() {
@@ -175,8 +176,8 @@ class Sequencer extends Component {
                         ))}
                 </div>
                 <div className = 'controls'>
-                    <label htmlFor='tempo-slider'>TEMPO: {`${tempo}`} BPM</label>
-                    <input type='range' name='tempo-slider' min='20' max='300' step='2' value={tempo} onChange={this.tempoAdjust}/>
+                    {/*<label htmlFor='tempo-slider'>TEMPO: {`${tempo}`} BPM</label>
+                    <input type='range' name='tempo-slider' min='20' max='300' step='2' value={tempo} onChange={this.tempoAdjust}/>*/}
                 </div>
                 <div className='transport'>
                     {iniTone ?
