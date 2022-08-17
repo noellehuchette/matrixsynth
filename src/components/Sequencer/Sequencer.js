@@ -5,24 +5,7 @@ import { start, Transport, Loop, Synth, Chorus, Draw, Part } from 'tone';
 import { step, initialize, stop, play } from '../../store/sequencer';
 import './sequencer.css';
 
-const notes = [
-    'D5',
-    'C5',
-    'A4',
-    'G4',
-    'F4',
-    'D4',
-    'C4',
-    'A3',
-    'G3',
-    'F3',
-    'D3',
-    'C3',
-    'A2',
-    'G2',
-    'F2',
-    'D2',
-];
+const notes = ['D5','C5','A4','G4','F4','D4','C4','A3','G3','F3','D3','C3','A2','G2','F2','D2'];
 
 const initPattern = () => {
     return [
@@ -50,7 +33,6 @@ const buildSynths = () => {
     const chorus = new Chorus(5, 5, 5).toDestination();
     for (let syn = 0; syn < 16; syn++) {
         synths[syn] = new Synth().connect(chorus);
-
     }
     return synths;
 };
