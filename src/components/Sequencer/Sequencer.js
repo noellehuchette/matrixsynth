@@ -47,7 +47,7 @@ const initPattern = () => {
 
 const buildSynths = () => {
     const synths = [];
-    const chorus = new Chorus(6, 5, 5).toDestination();
+    const chorus = new Chorus(5, 5, 5).toDestination();
     for (let syn = 0; syn < 16; syn++) {
         synths[syn] = new Synth().connect(chorus);
 
@@ -76,14 +76,15 @@ class Sequencer extends Component {
     }
 
     componentDidMount() {
-        this.props.initialize(0);
+        this.props.initialize();
         const synths = buildSynths();
         Transport.bpm.value = this.state.tempo;
         this.setState({ synths });
     }
 
     componentDidUpdate(prevProps, prevState) {
-        if (!this.state.playing && this.props.sequencer != -1) {
+        if (!this.state.playing && this.props.sequencer > -1) {
+            this.props.step();
             this.props.stop();
         }
         if (this.state.tempo !== prevState.tempo) {
@@ -97,10 +98,8 @@ class Sequencer extends Component {
         const iniTone = true;
         Transport.loop = true;
         Transport.setLoopPoints(0, '1m');
-        let beat = new Loop((time) => {
-            Draw.schedule(() => {
-                step();
-            }, time);
+        let tracking = new Loop((time) => {
+            Draw.schedule(() => step(), time);
         }, '16n').start(0);
         this.setState({ iniTone });
         this.setPart(this.state.pattern);
@@ -114,8 +113,8 @@ class Sequencer extends Component {
             this.setState({ playing });
         }
         else {
-            Transport.start();
-            let playing = !this.state.playing;
+            this.props.play();
+            let playing = true;
             this.setState({ playing });
         }
     }
@@ -138,9 +137,10 @@ class Sequencer extends Component {
         parts.forEach(part => part.dispose());
         parts = [];
         synths.forEach((synth, idx) => {
-            let arrangement = pattern[idx].map((step, beat) => {
-                if (step) return { time: { '16n': +beat }, note: notes[idx] };
-            }).filter(item => item);
+            let arrangement = [];
+            pattern[idx].forEach((step, beat) => {
+                if (step) arrangement.push({ time: { '16n': +beat }, note: notes[idx] });
+            });
             parts.push(new Part(((time, value) => {
                 synth.triggerAttackRelease(value.note, '32n.', time);
             }), arrangement).start(0));
