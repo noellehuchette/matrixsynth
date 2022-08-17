@@ -8,7 +8,7 @@ Made over a weekend during bootcamp using create-react-app for boilerplate code.
 
 ### Program wishlist
 - voice control (oscillator selector, amp envelope, FM/AM options)
-- additional modules (filter & ADSR envelope)
+- additional modules (filter & ADSR envelope, stereo spread, rhythm section)
 - effects & modulation (reverb, delay, distortion, LFO)
 - improved styling and performance 
 
