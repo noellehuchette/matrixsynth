@@ -1,16 +1,16 @@
 {
   "files": {
-    "main.css": "/matrixsynth/static/css/main.c636e8ae.css",
-    "main.js": "/matrixsynth/static/js/main.67a5cfb3.js",
+    "main.css": "/matrixsynth/static/css/main.111fa025.css",
+    "main.js": "/matrixsynth/static/js/main.d72ebda6.js",
     "static/js/787.02d59cfc.chunk.js": "/matrixsynth/static/js/787.02d59cfc.chunk.js",
     "static/media/logo.svg": "/matrixsynth/static/media/logo.6ce24c58023cc2f8fd88fe9d219db6c6.svg",
     "index.html": "/matrixsynth/index.html",
-    "main.c636e8ae.css.map": "/matrixsynth/static/css/main.c636e8ae.css.map",
-    "main.67a5cfb3.js.map": "/matrixsynth/static/js/main.67a5cfb3.js.map",
+    "main.111fa025.css.map": "/matrixsynth/static/css/main.111fa025.css.map",
+    "main.d72ebda6.js.map": "/matrixsynth/static/js/main.d72ebda6.js.map",
     "787.02d59cfc.chunk.js.map": "/matrixsynth/static/js/787.02d59cfc.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.c636e8ae.css",
-    "static/js/main.67a5cfb3.js"
+    "static/css/main.111fa025.css",
+    "static/js/main.d72ebda6.js"
   ]
 }
