@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Square from './Square';
-import { start, Transport, Loop, Synth, Chorus, Draw, Part } from 'tone';
+import { start, Transport, Loop, Synth, Draw, Part, Reverb } from 'tone';
 import { step, initialize, stop, play } from '../../store/sequencer';
 import './sequencer.css';
 
@@ -30,9 +30,9 @@ const initPattern = () => {
 
 const buildSynths = () => {
     const synths = [];
-    const chorus = new Chorus(5, 5, 5).toDestination();
+    const reverb = new Reverb({wet: 0.6}).toDestination();
     for (let syn = 0; syn < 16; syn++) {
-        synths[syn] = new Synth().connect(chorus);
+        synths[syn] = new Synth().connect(reverb);
     }
     return synths;
 };
@@ -80,7 +80,7 @@ class Sequencer extends Component {
         const iniTone = true;
         Transport.loop = true;
         Transport.setLoopPoints(0, '1m');
-        let tracking = new Loop((time) => {
+        const tracking = new Loop((time) => {
             Draw.schedule(() => step(), time);
         }, '16n').start(0);
         this.setState({ iniTone });
@@ -148,10 +148,10 @@ class Sequencer extends Component {
                             <div className='tonerow' key={`yy${y}`}>
                                 {row.map((val, x) => (
                                     <Square
-                                      key={`xx${x}`}
-                                      active={step === x}
-                                      value={val}
-                                      onClick={() => this.toggleSquare(x,y)}
+                                        key={`xx${x}`}
+                                        active={step === x}
+                                        value={val}
+                                        onClick={() => this.toggleSquare(x,y)}
                                     />
                                 ))
                                 }
@@ -160,7 +160,15 @@ class Sequencer extends Component {
                 </div>
                 <div className = 'controls'>
                     <label htmlFor='tempo-slider'>TEMPO: {`${tempo}`} BPM</label>
-                    <input type='range' name='tempo-slider' min='20' max='420' step='2' value={tempo} onChange={this.tempoAdjust}/>
+                    <input 
+                        type='range' 
+                        name='tempo-slider' 
+                        min='10' 
+                        max='250' 
+                        step='2' 
+                        value={tempo} 
+                        onChange={this.tempoAdjust}
+                    />
                 </div>
                 <div className='transport'>
                     {iniTone ?
