@@ -1,42 +1,40 @@
-import {Transport} from 'tone';
+import { Transport } from 'tone';
 
 const STEP = 'STEP';
 const INITIALIZE = 'INITIALIZE';
 const STOP = 'STOP';
 const PLAY = 'PLAY';
 
-
 export const step = () => ({
-    type: STEP,
+  type: STEP
 });
 
 export const initialize = () => ({
-    type: INITIALIZE,
+  type: INITIALIZE
 });
 
 export const stop = () => ({
-    type: STOP,
+  type: STOP
 });
 
 export const play = () => ({
-    type: PLAY,
+  type: PLAY
 });
 
-
-export default function(state = -1, action) {
-    let updState = +state;
-    switch (action.type) {
-        case INITIALIZE:
-            return state;
-        case STEP:
-            if (++updState >= 16) updState = 0;
-            return updState;
-        case STOP:
-            Transport.stop();
-            return updState = -1;
-        case PLAY:
-            Transport.start();
-        default:
-            return state;
-    }
+export default function (state = -1, action) {
+  let updState = +state;
+  switch (action.type) {
+    case INITIALIZE:
+      return state;
+    case STEP:
+      if (++updState >= 16) updState = 0;
+      return updState;
+    case STOP:
+      Transport.stop();
+      return -1;
+    case PLAY:
+      Transport.start();
+    default:
+      return state;
+  }
 }

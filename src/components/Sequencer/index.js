@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { start, Transport, Loop, Synth, Draw, Part, Reverb } from 'tone';
 import { step, initialize, stop, play } from '../../store/sequencer';
+import './style.css';
 
 // sequencer scale
 const notes = [
@@ -55,10 +56,10 @@ const buildSynths = () => {
   return synths;
 };
 
-const Sequencer = (props) => {
+const Sequencer = () => {
   // load saved info
   let stored = window.localStorage.getItem('matrixpattern');
-  const step = useSelector((state) => state.sequencer);
+  const seqStep = useSelector((state) => state.sequencer);
 
   // redux functions
   const dispatch = useDispatch();
@@ -79,48 +80,102 @@ const Sequencer = (props) => {
     Transport.bpm.value = tempo;
   }, []);
 
-  // play state change
-
   // pattern change
-
-  // tempo change
-
-  // app functions
-
-  const initSeq = () => {
-    const iniTone = true;
-    Transport.loop = true;
-    Transport.setLoopPoints(0, '1m');
-    const tracking = new Loop((time) => {
-      Draw.schedule(() => step(), time);
-    }, '16n').start(0);
-    setInit(true);
-    dispatch(stop());
-  };
-
-  const setPart = (pattern) => {
-    let { synths, parts } = this.state;
+  useEffect(() => {
     parts.forEach((part) => part.dispose());
-    parts = [];
+    let newParts = [];
     synths.forEach((synth, idx) => {
       let arrangement = [];
       pattern[idx].forEach((step, beat) => {
         if (step)
           arrangement.push({ time: { '16n': +beat }, note: notes[idx] });
       });
-      parts.push(
+      newParts.push(
         new Part((time, value) => {
           synth.triggerAttackRelease(value.note, '32n.', time);
         }, arrangement).start(0)
       );
     });
-    this.setState({ parts });
+    setParts(newParts);
     window.localStorage.setItem('matrixpattern', JSON.stringify(pattern));
+  }, [pattern]);
+
+  // app functions
+
+  const initSeq = () => {
+    Transport.loop = true;
+    Transport.setLoopPoints(0, '1m');
+    const tracking = new Loop((time) => {
+      Draw.schedule(() => dispatch(step()), time);
+    }, '16n').start(0);
+    setInit(true);
+    dispatch(stop());
+  };
+
+  const toggleTransport = () => {
+    if (playing) {
+      dispatch(stop());
+      setPlaying(false);
+    } else {
+      dispatch(play());
+      setPlaying(true);
+    }
+  };
+
+  const toggleSquare = (x, y) => {
+    pattern[y][x] = +!pattern[y][x];
+    setPattern([...pattern]);
+  };
+
+  const clearPattern = () => {
+    setPattern(initPattern());
+  };
+
+  const tempoAdjust = (e) => {
+    Transport.bpm.value = e.target.value;
+    setTempo(e.target.value);
   };
 
   return (
     <div className="sequencer-block">
-      <div className="matrix">MS</div>
+      <h3>matrix sequencer</h3>
+      <div className="matrix">
+        {pattern.map((row, y) => (
+          <div className="tonerow" key={`row${y}`}>
+            {row.map((val, x) => (
+              <div
+                key={`square${x}${y}`}
+                className={
+                  'tonesquare ' +
+                  (x === seqStep ? 'live ' : '') +
+                  (val ? 'filled' : '')
+                }
+                onClick={() => toggleSquare(x, y)}
+              />
+            ))}
+          </div>
+        ))}
+      </div>
+      <div className="controls">
+        <label htmlFor="tempo-slider">TEMPO: {`${tempo}`} BPM</label>
+        <input
+          type="range"
+          name="tempo-slider"
+          min="10"
+          max="250"
+          step="2"
+          value={tempo}
+          onChange={tempoAdjust}
+        />
+      </div>
+      <div className="transport">
+        {init ? (
+          <button onClick={toggleTransport}>{playing ? 'STOP' : 'PLAY'}</button>
+        ) : (
+          <button onClick={initSeq}>INIT</button>
+        )}
+        <button onClick={clearPattern}>CLEAR PATTERN</button>
+      </div>
     </div>
   );
 };

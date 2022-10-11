@@ -1,13 +1,13 @@
-import React from "react";
+import React from 'react';
 import Synth from '../Synth/Synth';
-import Sequencer from '../Sequencer/Sequencer';
+import Sequencer from '../Sequencer/';
 
 const Main = (props) => {
-    return(
+  return (
     <div>
-        <Sequencer />
+      <Sequencer />
     </div>
-    );
+  );
 };
 
 export default Main;
