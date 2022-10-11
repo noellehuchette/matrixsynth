@@ -51,7 +51,7 @@ const buildSynths = () => {
   const synths = [];
   const reverb = new Reverb({ wet: 0.75 }).toDestination();
   for (let syn = 0; syn < 16; syn++) {
-    synths[syn] = new Synth().connect(reverb);
+    synths[syn] = new Synth().toDestination();
   }
   return synths;
 };
@@ -67,11 +67,11 @@ const Sequencer = () => {
   // state variables
   const [init, setInit] = useState(false);
   const [playing, setPlaying] = useState(false);
-  const [pattern, setPattern] = useState(
+  let [pattern, setPattern] = useState(
     stored ? JSON.parse(stored) : initPattern()
   );
   const [synths, setSynths] = useState(buildSynths());
-  const [parts, setParts] = useState([]);
+  let [parts, setParts] = useState([]);
   const [tempo, setTempo] = useState(120);
 
   // page load
@@ -80,36 +80,53 @@ const Sequencer = () => {
     Transport.bpm.value = tempo;
   }, []);
 
+  // transport change
+  useEffect(() => {
+    if (!playing && seqStep > -1) {
+      dispatch(step());
+      dispatch(stop());
+    }
+  });
+
   // pattern change
   useEffect(() => {
-    parts.forEach((part) => part.dispose());
-    let newParts = [];
+    parts.forEach((part) => {
+      part.dispose();
+    });
+    parts = [];
     synths.forEach((synth, idx) => {
       let arrangement = [];
       pattern[idx].forEach((step, beat) => {
-        if (step)
+        if (step) {
           arrangement.push({ time: { '16n': +beat }, note: notes[idx] });
+        }
       });
-      newParts.push(
+      parts.push(
         new Part((time, value) => {
           synth.triggerAttackRelease(value.note, '32n.', time);
         }, arrangement).start(0)
       );
     });
-    setParts(newParts);
+    setParts(parts);
     window.localStorage.setItem('matrixpattern', JSON.stringify(pattern));
   }, [pattern]);
+
+  // tempo change
+  useEffect(() => {
+    Transport.bpm.value = tempo;
+  }, [tempo]);
 
   // app functions
 
   const initSeq = () => {
+    start();
     Transport.loop = true;
     Transport.setLoopPoints(0, '1m');
     const tracking = new Loop((time) => {
       Draw.schedule(() => dispatch(step()), time);
     }, '16n').start(0);
-    setInit(true);
     dispatch(stop());
+    setInit(true);
   };
 
   const toggleTransport = () => {
@@ -132,7 +149,6 @@ const Sequencer = () => {
   };
 
   const tempoAdjust = (e) => {
-    Transport.bpm.value = e.target.value;
     setTempo(e.target.value);
   };
 

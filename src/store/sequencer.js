@@ -31,9 +31,11 @@ export default function (state = -1, action) {
       return updState;
     case STOP:
       Transport.stop();
-      return -1;
+      updState = -1;
+      return updState;
     case PLAY:
       Transport.start();
+      return state;
     default:
       return state;
   }
