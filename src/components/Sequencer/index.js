@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { start, Transport, Loop, Synth, Draw, Part, Reverb } from 'tone';
 import { step, initialize, stop, play } from '../../store/sequencer';
@@ -49,9 +49,10 @@ const initPattern = () => {
 // build synth instances
 const buildSynths = () => {
   const synths = [];
-  const reverb = new Reverb({ wet: 0.75 }).toDestination();
+  // const reverb = new Reverb({ wet: 0.75 }).toDestination();
   for (let syn = 0; syn < 16; syn++) {
     synths[syn] = new Synth().toDestination();
+    // synths[syn] = new Synth().connect(reverb);
   }
   return synths;
 };
@@ -59,9 +60,9 @@ const buildSynths = () => {
 const Sequencer = () => {
   // load saved info
   let stored = window.localStorage.getItem('matrixpattern');
-  const seqStep = useSelector((state) => state.sequencer);
 
-  // redux functions
+  // redux connectivity
+  const seqStep = useSelector((state) => state.sequencer);
   const dispatch = useDispatch();
 
   // state variables
@@ -77,10 +78,8 @@ const Sequencer = () => {
   // page load
   useEffect(() => {
     dispatch(initialize());
-    Transport.bpm.value = tempo;
   }, []);
 
-  // transport change
   useEffect(() => {
     if (!playing && seqStep > -1) {
       dispatch(step());

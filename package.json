@@ -1,7 +1,7 @@
 {
-  "name": "webby",
+  "name": "matrix synth",
   "version": "0.1.0",
-  "homepage": "https://webby-social.heroku.com",
+  "homepage": "https://noellehuchette.github.io/matrixsynth/",
   "private": true,
   "engines": {
     "npm": ">=7.0.0",
