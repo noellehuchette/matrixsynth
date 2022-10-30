@@ -21,7 +21,7 @@ export const play = () => ({
   type: PLAY
 });
 
-export default function (state = -1, action) {
+const sequencer = (state = -1, action) => {
   let updState = +state;
   switch (action.type) {
     case INITIALIZE:
@@ -39,4 +39,6 @@ export default function (state = -1, action) {
     default:
       return state;
   }
-}
+};
+
+export default sequencer;
