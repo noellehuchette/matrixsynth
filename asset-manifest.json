@@ -1,16 +1,15 @@
 {
   "files": {
-    "main.css": "/matrixsynth/static/css/main.111fa025.css",
-    "main.js": "/matrixsynth/static/js/main.d72ebda6.js",
-    "static/js/787.02d59cfc.chunk.js": "/matrixsynth/static/js/787.02d59cfc.chunk.js",
-    "static/media/logo.svg": "/matrixsynth/static/media/logo.6ce24c58023cc2f8fd88fe9d219db6c6.svg",
+    "main.css": "/matrixsynth/static/css/main.d3272b67.css",
+    "main.js": "/matrixsynth/static/js/main.62cf899a.js",
+    "static/js/787.7a3fbbe3.chunk.js": "/matrixsynth/static/js/787.7a3fbbe3.chunk.js",
     "index.html": "/matrixsynth/index.html",
-    "main.111fa025.css.map": "/matrixsynth/static/css/main.111fa025.css.map",
-    "main.d72ebda6.js.map": "/matrixsynth/static/js/main.d72ebda6.js.map",
-    "787.02d59cfc.chunk.js.map": "/matrixsynth/static/js/787.02d59cfc.chunk.js.map"
+    "main.d3272b67.css.map": "/matrixsynth/static/css/main.d3272b67.css.map",
+    "main.62cf899a.js.map": "/matrixsynth/static/js/main.62cf899a.js.map",
+    "787.7a3fbbe3.chunk.js.map": "/matrixsynth/static/js/787.7a3fbbe3.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.111fa025.css",
-    "static/js/main.d72ebda6.js"
+    "static/css/main.d3272b67.css",
+    "static/js/main.62cf899a.js"
   ]
 }
