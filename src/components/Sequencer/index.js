@@ -154,7 +154,6 @@ const Sequencer = () => {
   // component
   return (
     <div className="sequencer-block">
-      <h3>matrix sequencer</h3>
       <div className="matrix">
         {pattern.map((row, y) => (
           <div className="tonerow" key={`row${y}`}>
