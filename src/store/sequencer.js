@@ -1,7 +1,7 @@
 import { Transport } from 'tone';
 
-const STEP = 'STEP';
 const INITIALIZE = 'INITIALIZE';
+const STEP = 'STEP';
 const STOP = 'STOP';
 const PLAY = 'PLAY';
 

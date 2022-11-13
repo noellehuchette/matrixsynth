@@ -49,50 +49,49 @@ const initPattern = () => {
 // build synth instances
 const buildSynths = () => {
   const synths = [];
-  // const reverb = new Reverb({ wet: 0.75 }).toDestination();
+  const reverb = new Reverb({ wet: 0.75 }).toDestination();
   for (let syn = 0; syn < 16; syn++) {
-    synths[syn] = new Synth().toDestination();
-    // synths[syn] = new Synth().connect(reverb);
+    // synths[syn] = new Synth().toDestination();
+    synths[syn] = new Synth().connect(reverb);
   }
   return synths;
 };
 
+Transport.loop = true;
+Transport.setLoopPoints(0, '1m');
+const synths = buildSynths();
+
 const Sequencer = () => {
   // load saved info
-  let stored = window.localStorage.getItem('matrixpattern');
+  let storedPattern = window.localStorage.getItem('matrixpattern');
+  let storedTempo = window.localStorage.getItem('tempo');
 
   // redux connectivity
   const seqStep = useSelector((state) => state.sequencer);
   const dispatch = useDispatch();
 
+  // build synths
+  // const synths = useRef(buildSynths());
+
   // state variables
   const [init, setInit] = useState(false);
   const [playing, setPlaying] = useState(false);
   let [pattern, setPattern] = useState(
-    stored ? JSON.parse(stored) : initPattern()
+    storedPattern ? JSON.parse(storedPattern) : initPattern()
   );
-  const [synths, setSynths] = useState(buildSynths());
+
   let [parts, setParts] = useState([]);
-  const [tempo, setTempo] = useState(120);
+  const [tempo, setTempo] = useState(storedTempo ? +storedTempo : 120);
 
-  // page load
-  useEffect(() => {
-    dispatch(initialize());
-  }, []);
-
-  useEffect(() => {
-    if (!playing && seqStep > -1) {
-      dispatch(step());
-      dispatch(stop());
-    }
-  });
+  if (!playing && seqStep > -1) {
+    dispatch(stop());
+  }
 
   // pattern change
   useEffect(() => {
     parts.forEach((part) => {
       part.dispose();
     });
-    parts = [];
     synths.forEach((synth, idx) => {
       let arrangement = [];
       pattern[idx].forEach((step, beat) => {
@@ -113,34 +112,38 @@ const Sequencer = () => {
   // tempo change
   useEffect(() => {
     Transport.bpm.value = tempo;
+    window.localStorage.setItem('tempo', tempo);
   }, [tempo]);
 
   // app functions
 
   const initSeq = () => {
+    dispatch(initialize());
     start();
-    Transport.loop = true;
-    Transport.setLoopPoints(0, '1m');
     const tracking = new Loop((time) => {
       Draw.schedule(() => dispatch(step()), time);
     }, '16n').start(0);
-    dispatch(stop());
     setInit(true);
+    dispatch(stop());
   };
 
   const toggleTransport = () => {
     if (playing) {
-      dispatch(stop());
       setPlaying(false);
+      dispatch(stop());
     } else {
-      dispatch(play());
       setPlaying(true);
+      dispatch(play());
     }
   };
 
   const toggleSquare = (x, y) => {
     pattern[y][x] = +!pattern[y][x];
-    setPattern([...pattern]);
+    setPattern(
+      pattern.map((row) => {
+        return [...row];
+      })
+    );
   };
 
   const clearPattern = () => {
