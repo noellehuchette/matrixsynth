@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { start, Transport, Loop, Synth, Draw, Part, Reverb } from 'tone';
 import { step, initialize, stop, play } from '../../store/sequencer';
