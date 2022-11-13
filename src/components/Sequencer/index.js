@@ -51,12 +51,12 @@ const buildSynths = () => {
   const synths = [];
   const reverb = new Reverb({ wet: 0.75 }).toDestination();
   for (let syn = 0; syn < 16; syn++) {
-    // synths[syn] = new Synth().toDestination();
     synths[syn] = new Synth().connect(reverb);
   }
   return synths;
 };
 
+// page load
 Transport.loop = true;
 Transport.setLoopPoints(0, '1m');
 const synths = buildSynths();
@@ -70,19 +70,16 @@ const Sequencer = () => {
   const seqStep = useSelector((state) => state.sequencer);
   const dispatch = useDispatch();
 
-  // build synths
-  // const synths = useRef(buildSynths());
-
   // state variables
   const [init, setInit] = useState(false);
   const [playing, setPlaying] = useState(false);
   let [pattern, setPattern] = useState(
     storedPattern ? JSON.parse(storedPattern) : initPattern()
   );
-
   let [parts, setParts] = useState([]);
   const [tempo, setTempo] = useState(storedTempo ? +storedTempo : 120);
 
+  // check play status & step for render
   if (!playing && seqStep > -1) {
     dispatch(stop());
   }
@@ -154,6 +151,7 @@ const Sequencer = () => {
     setTempo(e.target.value);
   };
 
+  // component
   return (
     <div className="sequencer-block">
       <h3>matrix sequencer</h3>
