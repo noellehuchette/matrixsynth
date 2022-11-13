@@ -6,7 +6,7 @@ import './style.css';
 const Synth = () => {
   return (
     <div className="synth-block">
-      <div className="synth controls"></div>
+      <div className="synth-controls"></div>
     </div>
   );
 };
