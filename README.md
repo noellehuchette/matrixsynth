@@ -11,8 +11,10 @@ Made over a weekend during bootcamp using create-react-app for boilerplate code.
 12/2/22 - added oscillator selector, amp envelope, and basic filter
 
 ###  wishlist
+- voice saving
 - voice control (FM/AM options)
 - additional modules (stereo spread, rhythm section)
 - effects & modulation (reverb, delay, distortion, LFO, chorus controls)
 - improved styling and performance 
+
 
