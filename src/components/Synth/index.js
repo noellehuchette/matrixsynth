@@ -135,7 +135,7 @@ const Synth = () => {
                 type="range"
                 id="amp-attack"
                 name="amp-atk"
-                min="0"
+                min="0.01"
                 max="1"
                 step="0.01"
                 value={ampA}
@@ -146,7 +146,7 @@ const Synth = () => {
                 type="range"
                 id="amp-decay"
                 name="amp-dcy"
-                min="0"
+                min="0.01"
                 max="1"
                 step="0.01"
                 value={ampD}
@@ -159,7 +159,7 @@ const Synth = () => {
                 type="range"
                 id="amp-sustain"
                 name="amp-sus"
-                min="0"
+                min="0.01"
                 max="1"
                 step="0.01"
                 value={ampS}
@@ -170,7 +170,7 @@ const Synth = () => {
                 type="range"
                 id="amp-release"
                 name="amp-rel"
-                min="0"
+                min="0.01"
                 max="1"
                 step="0.01"
                 value={ampR}
