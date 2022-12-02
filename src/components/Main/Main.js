@@ -7,8 +7,8 @@ const Main = (props) => {
   return (
     <div className="msblock">
       <h3>matrix sequencer</h3>
-      <Synth />
       <Sequencer />
+      <Synth />
     </div>
   );
 };

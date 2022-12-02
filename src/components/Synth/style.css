@@ -1,0 +1,32 @@
+.synth-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+fieldset {
+  align-items: center;
+  justify-content: center;
+  color: #D3D4D9;
+  display: flex;
+  border-radius: 1rem;
+}
+
+.osc-controls fieldset{
+  flex-direction: column;
+}
+
+.filter-params {
+  display: flex;
+  flex-direction: column;
+}
+
+.filter-envelope {
+  display: flex;
+  flex-direction: column;
+}
+
+.amp-envelope {
+  display: flex;
+  flex-direction: column;
+}
