@@ -47,7 +47,7 @@ const initPattern = () => {
 };
 
 // build synth instances
-const buildSynths = () => {
+export const buildSynths = () => {
   const synths = [];
   const reverb = new Reverb({ wet: 0.75 }).toDestination();
   for (let syn = 0; syn < 16; syn++) {
@@ -59,7 +59,7 @@ const buildSynths = () => {
 // page load
 Transport.loop = true;
 Transport.setLoopPoints(0, '1m');
-const synths = buildSynths();
+// const synths = buildSynths();
 
 const Sequencer = () => {
   // load saved info
@@ -69,6 +69,7 @@ const Sequencer = () => {
   // redux connectivity
   const seqStep = useSelector((state) => state.sequencer);
   const dispatch = useDispatch();
+  const synths = useSelector((state) => state.synth);
 
   // state variables
   const [init, setInit] = useState(false);
@@ -98,13 +99,13 @@ const Sequencer = () => {
       });
       parts.push(
         new Part((time, value) => {
-          synth.triggerAttackRelease(value.note, '32n.', time);
+          synth.amp.triggerAttackRelease('32n.', time);
         }, arrangement).start(0)
       );
     });
     setParts(parts);
     window.localStorage.setItem('matrixpattern', JSON.stringify(pattern));
-  }, [pattern]);
+  }, [pattern, synths]);
 
   // tempo change
   useEffect(() => {
@@ -154,7 +155,6 @@ const Sequencer = () => {
   // component
   return (
     <div className="sequencer-block">
-      <h3>matrix sequencer</h3>
       <div className="matrix">
         {pattern.map((row, y) => (
           <div className="tonerow" key={`row${y}`}>
