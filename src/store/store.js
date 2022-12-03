@@ -5,7 +5,7 @@ import { createLogger } from 'redux-logger';
 
 const store = createStore(
   reducer,
-  applyMiddleware(thunkMiddleware, createLogger({ collapsed: true }))
+  applyMiddleware(thunkMiddleware /*, createLogger({ collapsed: true })*/)
 );
 
 export default store;
