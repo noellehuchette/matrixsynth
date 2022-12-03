@@ -64,7 +64,7 @@ const buildSynths = () => {
       release: 0.7
     }).connect(reverb);
     filters[syn] = new Tone.Filter({
-      Q: 0,
+      Q: 0.5,
       frequency: 2500,
       type: 'lowpass',
       rolloff: -12
