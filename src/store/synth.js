@@ -52,12 +52,8 @@ const buildSynths = () => {
   const synths = [];
 
   const osc = window.localStorage.getItem('oscillator');
-  const { attack, decay, sustain, release } = JSON.parse(
-    window.localStorage.getItem('amp')
-  );
-  const { type, rolloff, frequency } = JSON.parse(
-    window.localStorage.getItem('filter')
-  );
+  const amp = JSON.parse(window.localStorage.getItem('amp'));
+  const filter = JSON.parse(window.localStorage.getItem('filter'));
 
   const reverb = new Tone.Reverb({
     wet: 0.5,
@@ -66,16 +62,17 @@ const buildSynths = () => {
   for (let syn = 0; syn < 16; syn++) {
     // synths[syn] = new Tone.Synth().connect(reverb);
     amplifiers[syn] = new Tone.AmplitudeEnvelope({
-      attack: attack || 0.01,
-      decay: decay || 0.1,
-      sustain: sustain || 0.3,
-      release: release || 0.7
+      attack: amp && amp.attack ? amp.attack : 0.01,
+      decay: amp && amp.decay ? amp.decay : 0.1,
+      sustain: amp && amp.sustain ? amp.sustain : 0.3,
+      release: amp && amp.release ? amp.release : 0.7
     }).connect(reverb);
     filters[syn] = new Tone.Filter({
       Q: 0.5,
-      frequency: frequency || 2500,
-      type: type || 'lowpass',
-      rolloff: rolloff || -12
+      frequency:
+        filter && filter.frequency ? Math.round(filter.frequency) : 2500,
+      type: filter && filter.type ? filter.type : 'lowpass',
+      rolloff: filter && filter.rolloff ? filter.rolloff : -12
     }).connect(amplifiers[syn]);
     oscillators[syn] = new Tone.OmniOscillator(
       notes[syn],
