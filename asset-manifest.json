@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/matrixsynth/static/css/main.2e939cd3.css",
-    "main.js": "/matrixsynth/static/js/main.cccc69a5.js",
+    "main.js": "/matrixsynth/static/js/main.94432370.js",
     "static/js/787.7a3fbbe3.chunk.js": "/matrixsynth/static/js/787.7a3fbbe3.chunk.js",
     "index.html": "/matrixsynth/index.html",
     "main.2e939cd3.css.map": "/matrixsynth/static/css/main.2e939cd3.css.map",
-    "main.cccc69a5.js.map": "/matrixsynth/static/js/main.cccc69a5.js.map",
+    "main.94432370.js.map": "/matrixsynth/static/js/main.94432370.js.map",
     "787.7a3fbbe3.chunk.js.map": "/matrixsynth/static/js/787.7a3fbbe3.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.2e939cd3.css",
-    "static/js/main.cccc69a5.js"
+    "static/js/main.94432370.js"
   ]
 }
