@@ -30,17 +30,17 @@ export const changeOsc = (osc) => ({
   osc
 });
 
-export const changeFilter = (filter, rolloff, cutoff) => ({
+export const changeFilter = ({ fil, roll, freq }) => ({
   type: CHANGE_FILTER,
-  filter,
-  rolloff,
-  cutoff
+  fil,
+  roll,
+  freq
 });
 
-export const changeAmp = (atk, dcy, sus, rel) => ({
+export const changeAmp = ({ atk, dec, sus, rel }) => ({
   type: CHANGE_AMP,
   atk,
-  dcy,
+  dec,
   sus,
   rel
 });
@@ -51,6 +51,14 @@ const buildSynths = () => {
   const amplifiers = [];
   const synths = [];
 
+  const osc = window.localStorage.getItem('oscillator');
+  const { attack, decay, sustain, release } = JSON.parse(
+    window.localStorage.getItem('amp')
+  );
+  const { type, rolloff, frequency } = JSON.parse(
+    window.localStorage.getItem('filter')
+  );
+
   const reverb = new Tone.Reverb({
     wet: 0.5,
     decay: 1
@@ -58,20 +66,20 @@ const buildSynths = () => {
   for (let syn = 0; syn < 16; syn++) {
     // synths[syn] = new Tone.Synth().connect(reverb);
     amplifiers[syn] = new Tone.AmplitudeEnvelope({
-      attack: 0.01,
-      decay: 0.1,
-      sustain: 0.3,
-      release: 0.7
+      attack: attack || 0.01,
+      decay: decay || 0.1,
+      sustain: sustain || 0.3,
+      release: release || 0.7
     }).connect(reverb);
     filters[syn] = new Tone.Filter({
       Q: 0.5,
-      frequency: 2500,
-      type: 'lowpass',
-      rolloff: -12
+      frequency: frequency || 2500,
+      type: type || 'lowpass',
+      rolloff: rolloff || -12
     }).connect(amplifiers[syn]);
     oscillators[syn] = new Tone.OmniOscillator(
       notes[syn],
-      'fatsawtooth'
+      osc || 'fatsawtooth'
     ).connect(filters[syn]);
     synths.push({
       osc: oscillators[syn],
@@ -95,25 +103,44 @@ const synthesizer = (state = buildSynths(), action) => {
           type: action.osc
         });
       });
+      window.localStorage.setItem('oscillator', action.osc);
       return state;
     case CHANGE_FILTER:
       state.forEach((synth) => {
         synth.fil.set({
-          type: action.filter,
-          rolloff: action.rolloff,
-          frequency: action.cutoff
+          type: action.fil,
+          rolloff: action.roll,
+          frequency: action.freq
         });
       });
+      window.localStorage.setItem(
+        'filter',
+        JSON.stringify({
+          type: action.fil,
+          rolloff: action.roll,
+          frequency: action.freq
+        })
+      );
       return state;
     case CHANGE_AMP:
       state.forEach((synth) => {
         synth.amp.set({
           attack: action.atk,
-          decay: action.dcy,
+          decay: action.dec,
           sustain: action.sus,
           release: action.rel
         });
       });
+      window.localStorage.setItem(
+        'amp',
+        JSON.stringify({
+          attack: action.atk,
+          decay: action.dec,
+          sustain: action.sus,
+          release: action.rel
+        })
+      );
+      return state;
     default:
       return state;
   }

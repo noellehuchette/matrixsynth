@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { changeOsc, changeFilter, changeAmp } from '../../store/synth';
 import * as Tone from 'tone';
@@ -13,62 +13,77 @@ const Synth = () => {
   const synths = useSelector((state) => state.synth);
 
   //synth parameters
+
   const [osc, setOsc] = useState(synths[0].osc.type);
-  const [fil, setFil] = useState(synths[0].fil.type);
-  const [roll, setRoll] = useState(synths[0].fil.rolloff);
-  const [freq, setFreq] = useState(synths[0].fil.frequency.value);
-  const [ampA, setAmpA] = useState(synths[0].amp.attack);
-  const [ampD, setAmpD] = useState(synths[0].amp.decay);
-  const [ampS, setAmpS] = useState(synths[0].amp.sustain);
-  const [ampR, setAmpR] = useState(synths[0].amp.release);
 
-  const handleOsc = (e) => {
-    dispatch(changeOsc(e.target.value));
-    setOsc(e.target.value);
-  };
+  const [filter, setFilter] = useState({
+    fil: synths[0].fil.type,
+    roll: synths[0].fil.rolloff,
+    freq: synths[0].fil.frequency.value
+  });
 
-  const handleFilter = (e) => {
-    switch (e.target.name) {
-      case 'filt-type':
-        dispatch(changeFilter(e.target.value, roll, freq));
-        setFil(e.target.value);
-        return;
-      case 'filt-roll':
-        dispatch(changeFilter(fil, e.target.value, freq));
-        setRoll(e.target.value);
-        return;
-      case 'filt-cutoff':
-        dispatch(changeFilter(fil, roll, e.target.value));
-        setFreq(e.target.value);
-        return;
-      default:
-        return;
-    }
-  };
+  const [amp, setAmp] = useState({
+    atk: synths[0].amp.attack,
+    dec: synths[0].amp.decay,
+    sus: synths[0].amp.sustain,
+    rel: synths[0].amp.release
+  });
 
-  const handleAmp = (e) => {
-    switch (e.target.name) {
-      case 'amp-atk':
-        dispatch(changeAmp(e.target.value, ampD, ampS, ampR));
-        setAmpA(e.target.value);
-        return;
-      case 'amp-dcy':
-        dispatch(changeAmp(ampA, e.target.value, ampS, ampR));
-        setAmpD(e.target.value);
-        return;
-      case 'amp-sus':
-        dispatch(changeAmp(ampA, ampD, e.target.value, ampR));
-        setAmpS(e.target.value);
-        return;
-      case 'amp-rel':
-        dispatch(changeAmp(ampA, ampD, ampS, e.target.value));
-        setAmpR(e.target.value);
-        return;
-      default:
-        console.log(e.target.value);
-        return;
-    }
-  };
+  const handleOsc = useCallback(
+    (e) => {
+      dispatch(changeOsc(e.target.value));
+      setOsc(e.target.value);
+    },
+    [dispatch, setOsc]
+  );
+
+  const handleFilter = useCallback(
+    (e) => {
+      switch (e.target.name) {
+        case 'filt-type':
+          setFilter({ ...filter, fil: e.target.value });
+          dispatch(changeFilter({ ...filter, fil: e.target.value }));
+          return;
+        case 'filt-roll':
+          setFilter({ ...filter, roll: e.target.value });
+          dispatch(changeFilter({ ...filter, roll: e.target.value }));
+          return;
+        case 'filt-cutoff':
+          setFilter({ ...filter, freq: e.target.value });
+          dispatch(changeFilter({ ...filter, freq: e.target.value }));
+          return;
+        default:
+          return;
+      }
+    },
+    [dispatch, filter, setFilter]
+  );
+
+  const handleAmp = useCallback(
+    (e) => {
+      switch (e.target.name) {
+        case 'amp-atk':
+          setAmp({ ...amp, atk: e.target.value });
+          dispatch(changeAmp({ ...amp, atk: e.target.value }));
+          return;
+        case 'amp-dcy':
+          setAmp({ ...amp, dec: e.target.value });
+          dispatch(changeAmp({ ...amp, dec: e.target.value }));
+          return;
+        case 'amp-sus':
+          setAmp({ ...amp, sus: e.target.value });
+          dispatch(changeAmp({ ...amp, sus: e.target.value }));
+          return;
+        case 'amp-rel':
+          setAmp({ ...amp, rel: e.target.value });
+          dispatch(changeAmp({ ...amp, rel: e.target.value }));
+          return;
+        default:
+          return;
+      }
+    },
+    [dispatch, setAmp, amp]
+  );
 
   return (
     <div className="synth-block">
@@ -95,7 +110,7 @@ const Synth = () => {
                 <select
                   name="filt-type"
                   id="filt-type"
-                  value={fil}
+                  value={filter.fil}
                   onChange={handleFilter}
                 >
                   <option value="lowpass">Low pass</option>
@@ -105,7 +120,7 @@ const Synth = () => {
                 <select
                   name="filt-roll"
                   id="filt-roll"
-                  value={roll}
+                  value={filter.roll}
                   onChange={handleFilter}
                 >
                   <option value="-12">-12</option>
@@ -120,7 +135,7 @@ const Synth = () => {
                 min="10"
                 max="20000"
                 step="5"
-                value={freq}
+                value={filter.freq}
                 onChange={handleFilter}
               />
             </div>
@@ -130,7 +145,7 @@ const Synth = () => {
           <fieldset>
             <legend>Amp Envelope</legend>
             <div className="amp-envelope">
-              <label htmlFor="amp-attack">Attack: {ampA}</label>
+              <label htmlFor="amp-attack">Attack: {amp.atk}</label>
               <input
                 type="range"
                 id="amp-attack"
@@ -138,10 +153,10 @@ const Synth = () => {
                 min="0.01"
                 max="1"
                 step="0.01"
-                value={ampA}
+                value={amp.atk}
                 onChange={handleAmp}
               />
-              <label htmlFor="amp-decay">Decay: {ampD}</label>
+              <label htmlFor="amp-decay">Decay: {amp.dec}</label>
               <input
                 type="range"
                 id="amp-decay"
@@ -149,11 +164,11 @@ const Synth = () => {
                 min="0.01"
                 max="1"
                 step="0.01"
-                value={ampD}
+                value={amp.dec}
                 onChange={handleAmp}
               />
               <label htmlFor="amp-sustain">
-                Sustain: {Math.round(ampS * 100)}%
+                Sustain: {Math.round(amp.sus * 100)}%
               </label>
               <input
                 type="range"
@@ -162,10 +177,10 @@ const Synth = () => {
                 min="0.01"
                 max="1"
                 step="0.01"
-                value={ampS}
+                value={amp.sus}
                 onChange={handleAmp}
               />
-              <label htmlFor="amp-release">Release: {ampR}</label>
+              <label htmlFor="amp-release">Release: {amp.rel}</label>
               <input
                 type="range"
                 id="amp-release"
@@ -173,7 +188,7 @@ const Synth = () => {
                 min="0.01"
                 max="1"
                 step="0.01"
-                value={ampR}
+                value={amp.rel}
                 onChange={handleAmp}
               />
             </div>

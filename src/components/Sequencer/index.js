@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { start, Transport, Loop, Synth, Draw, Part, Reverb } from 'tone';
 import { step, initialize, stop, play } from '../../store/sequencer';
@@ -46,20 +46,9 @@ const initPattern = () => {
   ];
 };
 
-// build synth instances
-export const buildSynths = () => {
-  const synths = [];
-  const reverb = new Reverb({ wet: 0.75 }).toDestination();
-  for (let syn = 0; syn < 16; syn++) {
-    synths[syn] = new Synth().connect(reverb);
-  }
-  return synths;
-};
-
 // page load
 Transport.loop = true;
 Transport.setLoopPoints(0, '1m');
-// const synths = buildSynths();
 
 const Sequencer = () => {
   // load saved info
@@ -105,7 +94,7 @@ const Sequencer = () => {
     });
     setParts(parts);
     window.localStorage.setItem('matrixpattern', JSON.stringify(pattern));
-  }, [pattern, synths]);
+  }, [pattern, synths, parts]);
 
   // tempo change
   useEffect(() => {
