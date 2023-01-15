@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { start, Transport, Loop, Synth, Draw, Part, Reverb } from 'tone';
+import { start, Transport, Loop, Draw, Part } from 'tone';
 import { step, initialize, stop, play } from '../../store/sequencer';
 import './style.css';
 
@@ -114,7 +114,7 @@ const Sequencer = () => {
     dispatch(stop());
   };
 
-  const toggleTransport = () => {
+  const toggleTransport = useCallback(() => {
     if (playing) {
       setPlaying(false);
       dispatch(stop());
@@ -122,24 +122,30 @@ const Sequencer = () => {
       setPlaying(true);
       dispatch(play());
     }
-  };
+  }, [playing, setPlaying, dispatch]);
 
-  const toggleSquare = (x, y) => {
-    pattern[y][x] = +!pattern[y][x];
-    setPattern(
-      pattern.map((row) => {
-        return [...row];
-      })
-    );
-  };
+  const toggleSquare = useCallback(
+    (x, y) => {
+      pattern[y][x] = +!pattern[y][x];
+      setPattern(
+        pattern.map((row) => {
+          return [...row];
+        })
+      );
+    },
+    [pattern, setPattern]
+  );
 
-  const clearPattern = () => {
+  const clearPattern = useCallback(() => {
     setPattern(initPattern());
-  };
+  }, [setPattern]);
 
-  const tempoAdjust = (e) => {
-    setTempo(e.target.value);
-  };
+  const tempoAdjust = useCallback(
+    (e) => {
+      setTempo(e.target.value);
+    },
+    [setTempo]
+  );
 
   // component
   return (

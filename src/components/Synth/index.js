@@ -1,14 +1,12 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { changeOsc, changeFilter, changeAmp } from '../../store/synth';
-import * as Tone from 'tone';
 import './style.css';
 
 const Synth = () => {
   //load saved
 
   //redux connectivity
-  const seqStep = useSelector((state) => state.sequencer);
   const dispatch = useDispatch();
   const synths = useSelector((state) => state.synth);
 
@@ -19,7 +17,7 @@ const Synth = () => {
   const [filter, setFilter] = useState({
     fil: synths[0].fil.type,
     roll: synths[0].fil.rolloff,
-    freq: synths[0].fil.frequency.value
+    freq: Math.round(synths[0].fil.frequency.value)
   });
 
   const [amp, setAmp] = useState({
