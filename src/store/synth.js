@@ -62,17 +62,16 @@ const buildSynths = () => {
   for (let syn = 0; syn < 16; syn++) {
     // synths[syn] = new Tone.Synth().connect(reverb);
     amplifiers[syn] = new Tone.AmplitudeEnvelope({
-      attack: amp && amp.attack ? amp.attack : 0.01,
-      decay: amp && amp.decay ? amp.decay : 0.1,
-      sustain: amp && amp.sustain ? amp.sustain : 0.3,
-      release: amp && amp.release ? amp.release : 0.7
+      attack: amp?.attack || 0.01,
+      decay: amp?.decay || 0.1,
+      sustain: amp?.sustain || 0.3,
+      release: amp?.release || 0.7
     }).connect(reverb);
     filters[syn] = new Tone.Filter({
       Q: 0.5,
-      frequency:
-        filter && filter.frequency ? Math.round(filter.frequency) : 2500,
-      type: filter && filter.type ? filter.type : 'lowpass',
-      rolloff: filter && filter.rolloff ? filter.rolloff : -12
+      frequency: filter?.frequency ? Math.round(filter.frequency) : 2500,
+      type: filter?.type || 'lowpass',
+      rolloff: filter?.rolloff || -12
     }).connect(amplifiers[syn]);
     oscillators[syn] = new Tone.OmniOscillator(
       notes[syn],
